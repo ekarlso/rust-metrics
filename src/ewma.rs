@@ -1,15 +1,16 @@
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
+#[derive(Debug)]
 pub struct EWMA {
     pub uncounted: AtomicUsize, // This tracks uncounted events
     alpha: f64,
     rate: Mutex<f64>,
-    init: bool,
+    init: bool
 }
 
 pub struct EWMASnapshot {
-    value: f64,
+    value: f64
 }
 
 impl EWMASnapshot {
@@ -26,9 +27,7 @@ impl EWMA {
     }
 
     pub fn snapshot(&self) -> EWMASnapshot {
-        EWMASnapshot{
-            value: self.rate()
-        }
+        EWMASnapshot { value: self.rate() }
     }
 
     pub fn tick(&mut self) {
@@ -53,12 +52,7 @@ impl EWMA {
 
     /// construct new by alpha
     pub fn new_by_alpha(alpha: f64) -> EWMA {
-        EWMA{
-            uncounted: AtomicUsize::new(0),
-            alpha: alpha,
-            rate: Mutex::new(0f64),
-            init: false,
-        }
+        EWMA { uncounted: AtomicUsize::new(0), alpha: alpha, rate: Mutex::new(0f64), init: false }
     }
 
     /// constructs a new EWMA for a n-minute moving average.
@@ -92,7 +86,7 @@ mod test {
         e.update(3);
         e.tick();
 
-        let mut r: f64;
+        let r: f64;
 
         // initial
         r = e.rate();
